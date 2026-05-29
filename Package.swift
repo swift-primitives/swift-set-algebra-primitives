@@ -32,6 +32,12 @@ let package = Package(
         // swift-set-primitives deps this package NOWHERE ([MOD-032]).
         .package(path: "../swift-set-primitives"),
         .package(path: "../swift-iterator-primitives"),
+        // The formal algebra substrate grounds the set ops as ∪ = join / ∩ = meet
+        // over a packaged bounded lattice (model §4.2 / §9). The complement
+        // (∁A = U ∖ A) is this package's own native `subtracting`; there is no
+        // Boolean-algebra witness type — `Swift.Bool` is the canonical Boolean
+        // algebra (swift-bool-algebra-primitives), separate from this. Downward dep:
+        .package(path: "../swift-algebra-primitives"),
     ],
     targets: [
 
@@ -44,6 +50,7 @@ let package = Package(
                 .product(name: "Set Protocol Primitives", package: "swift-set-primitives"),
                 .product(name: "Set Buildable Protocol Primitives", package: "swift-set-primitives"),
                 .product(name: "Iterable", package: "swift-iterator-primitives"),
+                .product(name: "Algebra Lattice Primitives", package: "swift-algebra-primitives"),
             ]
         ),
 
