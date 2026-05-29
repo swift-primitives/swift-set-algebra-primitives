@@ -30,14 +30,14 @@ let package = Package(
         // concern (Iterable) in swift-iterator-primitives. This package bridges
         // them with the orthogonal element-wise algebra. It deps DOWN onto both;
         // swift-set-primitives deps this package NOWHERE ([MOD-032]).
-        .package(path: "../swift-set-primitives"),
-        .package(path: "../swift-iterator-primitives"),
+        .package(url: "https://github.com/swift-primitives/swift-set-primitives.git", branch: "main"),
+        .package(url: "https://github.com/swift-primitives/swift-iterator-primitives.git", branch: "main"),
         // The formal algebra substrate grounds the set ops as ∪ = join / ∩ = meet
         // over a packaged bounded lattice (model §4.2 / §9). The complement
         // (∁A = U ∖ A) is this package's own native `subtracting`; there is no
         // Boolean-algebra witness type — `Swift.Bool` is the canonical Boolean
         // algebra (swift-bool-algebra-primitives), separate from this. Downward dep:
-        .package(path: "../swift-algebra-primitives"),
+        .package(url: "https://github.com/swift-primitives/swift-algebra-primitives.git", branch: "main"),
     ],
     targets: [
 
