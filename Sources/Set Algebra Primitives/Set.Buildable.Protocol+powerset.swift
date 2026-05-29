@@ -43,7 +43,7 @@ where Self: Iterable & Copyable, Element: Copyable,
     /// - Returns: the bounded lattice whose join/meet are this set type's own
     ///   `union` / `intersection`, with `self` as the top element.
     @inlinable
-    public func powerset() -> Algebra.Lattice<Self> where Self: Sendable {
+    public func powerset() -> Algebra.Lattice<Self> {
         .init(
             bottom: Self(),
             join: { $0.union($1) },
