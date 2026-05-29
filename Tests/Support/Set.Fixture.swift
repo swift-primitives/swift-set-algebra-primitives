@@ -10,6 +10,7 @@
 // ===----------------------------------------------------------------------===//
 
 public import Set_Algebra_Primitives
+public import Set_Buildable_Protocol_Primitives
 public import Iterator_Chunk_Primitives
 
 extension Set where Element: Hash.`Protocol` & Copyable {
@@ -26,7 +27,7 @@ extension Set where Element: Hash.`Protocol` & Copyable {
     /// packages.
     public struct Fixture {
         @usableFromInline
-        let elements: [Element]
+        var elements: [Element]
 
         /// Creates a fixture from `elements`, dropping any later duplicates so
         /// the set-uniqueness invariant holds.
@@ -72,5 +73,35 @@ extension Set.Fixture: Iterable where Element: Hash.`Protocol` & Copyable {
     @inlinable
     public borrowing func makeIterator() -> Iterator_Chunk_Primitives.Iterator.Chunk<Element> {
         Iterator_Chunk_Primitives.Iterator.Chunk(elements.span)
+    }
+}
+
+// MARK: - Buildability concern (init() + insert)
+//
+// Makes `Set.Fixture` a `Set.Buildable.`Protocol`` conformer so the constructive
+// algebra (`union` / `intersection` / `subtracting` / `symmetricDifference`) and
+// the `powerset()` lattice — all composed `where Self: Set.Buildable.`Protocol` &
+// Iterable` in `Set Algebra Primitives` — have a concrete buildable conformer to
+// test against, independent of the storage disciplines that live in sibling
+// packages (set-ordered etc.). The returned index is `.zero`: the constructive
+// operations are `@discardableResult` and never inspect it.
+
+extension Set.Fixture: Set.Buildable.`Protocol` where Element: Hash.`Protocol` & Copyable {
+    @inlinable
+    public init() {
+        self.elements = []
+    }
+
+    @discardableResult
+    @inlinable
+    public mutating func insert(
+        _ element: consuming Element
+    ) -> (inserted: Bool, index: Index<Element>) {
+        let needle = copy element
+        if elements.contains(where: { $0 == needle }) {
+            return (false, .zero)
+        }
+        elements.append(element)
+        return (true, .zero)
     }
 }
