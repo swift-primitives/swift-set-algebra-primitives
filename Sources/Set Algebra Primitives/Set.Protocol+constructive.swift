@@ -9,23 +9,33 @@
 //
 // ===----------------------------------------------------------------------===//
 
-public import Set_Buildable_Protocol_Primitives
+public import Set_Protocol_Primitives
+public import Builder_Primitives
 public import Iterable
 
-// MARK: - Constructive Algebra (returns `Self`, on the growable `BuildableSet` refinement)
+// MARK: - Constructive Algebra (returns `Self`, composed over Set.Protocol × builder's Buildable)
 //
 // The constructive operations build a new set, so they are total only on
-// growable sets — hence `Self: Set.Buildable.\`Protocol\``. They return **`Self`**
+// growable sets — hence `Self: Buildable` (builder-primitives' generic build
+// capability: `Initiable`'s `init()` + the neutral `add`). They return **`Self`**
 // (the model §4.2 result-type fix), not a hard-coded `Set.Ordered`, so each
 // growable discipline gets back its own type and needs no downstream home.
-// Bounded disciplines (`Set.Ordered.Fixed`/`.Static`) are NOT `BuildableSet`
+// Bounded disciplines (`Set.Ordered.Fixed`/`.Static`) are NOT `Buildable`
 // and inherit the predicates only — a `Self`-returning constructive op on a
 // bounded set could silently overflow.
 //
-// `Element: Copyable` is required: these ops copy elements into the result.
+// There is no bundled `Set.Buildable.Protocol`: the buildable concern is
+// builder-primitives × set-primitives, composed here as `Set.Protocol &
+// Buildable`. The result is filled through `add` (builder's neutral grow op),
+// which each set conforms by delegating to its own `insert` and discarding the
+// report.
+//
+// `Self.Failure == Never`: empty construction (`Self()`) is infallible for every
+// growable set, so the constructive ops are non-throwing. `Element: Copyable` is
+// required: these ops copy elements into the result.
 
-extension Set.Buildable.`Protocol`
-where Self: Iterable & ~Copyable, Element: Copyable,
+extension Set.`Protocol`
+where Self: Buildable & Iterable & ~Copyable, Element: Copyable, Self.Failure == Never,
       Self.Iterator.Element == Element, Self.Iterator.Failure == Never {
 
     /// Returns a new set with elements from both sets.
@@ -42,8 +52,8 @@ where Self: Iterable & ~Copyable, Element: Copyable,
     ) -> Self
     where Other.Element == Element, Other.Iterator.Element == Element, Other.Iterator.Failure == Never {
         var result = Self()
-        self.forEach { element in result.insert(copy element) }
-        other.forEach { element in result.insert(copy element) }
+        self.forEach { element in result.add(copy element) }
+        other.forEach { element in result.add(copy element) }
         return result
     }
 
@@ -66,7 +76,7 @@ where Self: Iterable & ~Copyable, Element: Copyable,
     where Other.Element == Element, Other.Iterator.Element == Element, Other.Iterator.Failure == Never {
         var result = Self()
         self.forEach { element in
-            if other.contains(element) { result.insert(copy element) }
+            if other.contains(element) { result.add(copy element) }
         }
         return result
     }
@@ -87,7 +97,7 @@ where Self: Iterable & ~Copyable, Element: Copyable,
     where Other.Element == Element, Other.Iterator.Element == Element, Other.Iterator.Failure == Never {
         var result = Self()
         self.forEach { element in
-            if !other.contains(element) { result.insert(copy element) }
+            if !other.contains(element) { result.add(copy element) }
         }
         return result
     }
@@ -107,10 +117,10 @@ where Self: Iterable & ~Copyable, Element: Copyable,
     where Other.Element == Element, Other.Iterator.Element == Element, Other.Iterator.Failure == Never {
         var result = Self()
         self.forEach { element in
-            if !other.contains(element) { result.insert(copy element) }
+            if !other.contains(element) { result.add(copy element) }
         }
         other.forEach { element in
-            if !self.contains(element) { result.insert(copy element) }
+            if !self.contains(element) { result.add(copy element) }
         }
         return result
     }

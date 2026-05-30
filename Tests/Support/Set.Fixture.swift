@@ -10,7 +10,6 @@
 // ===----------------------------------------------------------------------===//
 
 public import Set_Algebra_Primitives
-public import Set_Buildable_Protocol_Primitives
 public import Iterator_Chunk_Primitives
 
 extension Set where Element: Hash.`Protocol` & Copyable {
@@ -32,7 +31,7 @@ extension Set where Element: Hash.`Protocol` & Copyable {
         /// Creates a fixture from `elements`, dropping any later duplicates so
         /// the set-uniqueness invariant holds.
         @inlinable
-        public init(_ elements: some Sequence<Element>) {
+        public init(_ elements: some Swift.Sequence<Element>) {
             var unique: [Element] = []
             for element in elements where !unique.contains(where: { $0 == element }) {
                 unique.append(element)
@@ -76,32 +75,28 @@ extension Set.Fixture: Iterable where Element: Hash.`Protocol` & Copyable {
     }
 }
 
-// MARK: - Buildability concern (init() + insert)
+// MARK: - Buildability concern (builder-primitives' Buildable: init() + add)
 //
-// Makes `Set.Fixture` a `Set.Buildable.`Protocol`` conformer so the constructive
+// Makes `Set.Fixture` a `Buildable` conformer (builder-primitives' generic build
+// capability — `Initiable`'s `init()` + the neutral `add`) so the constructive
 // algebra (`union` / `intersection` / `subtracting` / `symmetricDifference`) and
-// the `powerset()` lattice — all composed `where Self: Set.Buildable.`Protocol` &
+// the `powerset()` lattice — all composed `where Self: Set.Protocol & Buildable &
 // Iterable` in `Set Algebra Primitives` — have a concrete buildable conformer to
 // test against, independent of the storage disciplines that live in sibling
-// packages (set-ordered etc.). The returned index is `.zero`: the constructive
-// operations are `@discardableResult` and never inspect it.
+// packages (set-ordered etc.). There is no bundled `Set.Buildable.Protocol`; the
+// fixture composes the same builder-primitives × set-primitives the production
+// disciplines do. `add` deduplicates (the family's grow semantics).
 
-extension Set.Fixture: Set.Buildable.`Protocol` where Element: Hash.`Protocol` & Copyable {
+extension Set.Fixture: Buildable where Element: Hash.`Protocol` & Copyable {
     @inlinable
     public init() {
         self.elements = []
     }
 
-    @discardableResult
     @inlinable
-    public mutating func insert(
-        _ element: consuming Element
-    ) -> (inserted: Bool, index: Index<Element>) {
+    public mutating func add(_ element: consuming Element) {
         let needle = copy element
-        if elements.contains(where: { $0 == needle }) {
-            return (false, .zero)
-        }
+        guard !elements.contains(where: { $0 == needle }) else { return }
         elements.append(element)
-        return (true, .zero)
     }
 }

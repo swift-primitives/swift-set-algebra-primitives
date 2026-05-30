@@ -25,12 +25,16 @@ let package = Package(
         ),
     ],
     dependencies: [
-        // The membership core + the growable refinement (Set.Protocol /
-        // Set.Buildable.Protocol) live in swift-set-primitives; the iteration
-        // concern (Iterable) in swift-iterator-primitives. This package bridges
-        // them with the orthogonal element-wise algebra. It deps DOWN onto both;
-        // swift-set-primitives deps this package NOWHERE ([MOD-032]).
+        // The membership core (Set.Protocol) lives in swift-set-primitives; the
+        // build capability (Buildable: Initiable + add) in swift-builder-primitives;
+        // the iteration concern (Iterable) in swift-iterator-primitives. This
+        // package bridges them with the orthogonal element-wise algebra: predicates
+        // over Set.Protocol × Iterable, constructive/powerset over Set.Protocol ×
+        // Buildable × Iterable. There is NO bundled Set.Buildable.Protocol — the
+        // buildable concern is builder-primitives × set-primitives. It deps DOWN
+        // onto all three; swift-set-primitives deps this package NOWHERE ([MOD-032]).
         .package(url: "https://github.com/swift-primitives/swift-set-primitives.git", branch: "main"),
+        .package(url: "https://github.com/swift-primitives/swift-builder-primitives.git", branch: "main"),
         .package(url: "https://github.com/swift-primitives/swift-iterator-primitives.git", branch: "main"),
         // The formal algebra substrate grounds the set ops as ∪ = join / ∩ = meet
         // over a packaged bounded lattice (model §4.2 / §9). The complement
@@ -42,19 +46,19 @@ let package = Package(
     targets: [
 
         // MARK: - Algebra (predicates `where Self: Set.Protocol & Iterable` +
-        // constructive `where Self: Set.Buildable.Protocol & Iterable` → Self;
+        // constructive `where Self: Set.Protocol & Buildable & Iterable` → Self;
         // lifted from swift-set-primitives, [MOD-014] Form-1 extraction)
         .target(
             name: "Set Algebra Primitives",
             dependencies: [
                 .product(name: "Set Protocol Primitives", package: "swift-set-primitives"),
-                .product(name: "Set Buildable Protocol Primitives", package: "swift-set-primitives"),
+                .product(name: "Builder Primitives", package: "swift-builder-primitives"),
                 .product(name: "Iterable", package: "swift-iterator-primitives"),
                 .product(name: "Algebra Lattice Primitives", package: "swift-algebra-primitives"),
             ]
         ),
 
-        // MARK: - Test Support (the Iterable + BuildableSet conformer fixture)
+        // MARK: - Test Support (the Set.Protocol × Iterable × Buildable conformer fixture)
         .target(
             name: "Set Algebra Primitives Test Support",
             dependencies: [

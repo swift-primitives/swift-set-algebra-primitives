@@ -9,6 +9,8 @@
 //
 // ===----------------------------------------------------------------------===//
 
+public import Set_Protocol_Primitives
+public import Builder_Primitives
 public import Algebra_Lattice_Primitives
 public import Iterable
 
@@ -26,11 +28,13 @@ public import Iterable
 // relative complement is the package's own native operation —
 // `universe.subtracting(A)` (∁A = U ∖ A).
 //
-// Defined as an extension ON `Set.Buildable.`Protocol`` (mirroring the
-// constructive `union` / `intersection` ops), with `self` as the universe.
+// Defined as an extension ON `Set.Protocol` composed with builder's `Buildable`
+// (mirroring the constructive `union` / `intersection` ops), with `self` as the
+// universe. `Self: Copyable` (not `~Copyable`): the `Algebra.Lattice` value
+// captures `Self` in its join/meet closures.
 
-extension Set.Buildable.`Protocol`
-where Self: Iterable & Copyable, Element: Copyable,
+extension Set.`Protocol`
+where Self: Buildable & Iterable & Copyable, Element: Copyable, Self.Failure == Never,
       Self.Iterator.Element == Element, Self.Iterator.Failure == Never {
 
     /// The **powerset lattice** with `self` as the universe (⊤): join = `union`
