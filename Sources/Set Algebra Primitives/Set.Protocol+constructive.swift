@@ -9,9 +9,9 @@
 //
 // ===----------------------------------------------------------------------===//
 
-public import Set_Protocol_Primitives
 public import Builder_Primitives
 public import Iterable
+public import Set_Protocol_Primitives
 
 // MARK: - Constructive Algebra (returns `Self`, composed over Set.Protocol × builder's Buildable)
 //
@@ -35,8 +35,13 @@ public import Iterable
 // required: these ops copy elements into the result.
 
 extension Set.`Protocol`
-where Self: Buildable & Iterable & ~Copyable, Element: Copyable, Self.Failure == Never,
-      Self.Iterator.Element == Element, Self.Iterator.Failure == Never {
+where
+    Self: Buildable & Iterable & ~Copyable,
+    Element: Copyable,
+    Self.Failure == Never,
+    Self.Iterator.Element == Element,
+    Self.Iterator.Failure == Never
+{
 
     /// Returns a new set with elements from both sets.
     ///
@@ -47,6 +52,7 @@ where Self: Buildable & Iterable & ~Copyable, Element: Copyable, Self.Failure ==
     /// - Returns: A new set containing all elements from both sets.
     /// - Complexity: O(n + m) average, where n and m are the set sizes.
     @inlinable
+    // swiftlint:disable:next prefer_self_in_static_references - reason: `Self` here is the concrete conforming type, not the protocol; `Other: Self` over-constrains Other == Self and does not compile (verified via swiftc).
     public func union<Other: Set.`Protocol` & Iterable & ~Copyable>(
         _ other: borrowing Other
     ) -> Self
@@ -70,6 +76,7 @@ where Self: Buildable & Iterable & ~Copyable, Element: Copyable, Self.Failure ==
     ///   in the receiver's order.
     /// - Complexity: O(n) average, where n is the size of the receiver.
     @inlinable
+    // swiftlint:disable:next prefer_self_in_static_references - reason: `Self` here is the concrete conforming type, not the protocol; `Other: Self` over-constrains Other == Self and does not compile (verified via swiftc).
     public func intersection<Other: Set.`Protocol` & Iterable & ~Copyable>(
         _ other: borrowing Other
     ) -> Self
@@ -91,6 +98,7 @@ where Self: Buildable & Iterable & ~Copyable, Element: Copyable, Self.Failure ==
     /// - Returns: A new set with elements not in `other`.
     /// - Complexity: O(n) average, where n is the size of this set.
     @inlinable
+    // swiftlint:disable:next prefer_self_in_static_references - reason: `Self` here is the concrete conforming type, not the protocol; `Other: Self` over-constrains Other == Self and does not compile (verified via swiftc).
     public func subtracting<Other: Set.`Protocol` & Iterable & ~Copyable>(
         _ other: borrowing Other
     ) -> Self
@@ -111,6 +119,7 @@ where Self: Buildable & Iterable & ~Copyable, Element: Copyable, Self.Failure ==
     /// - Returns: A new set with elements in exactly one of the sets.
     /// - Complexity: O(n + m) average, where n and m are the set sizes.
     @inlinable
+    // swiftlint:disable:next prefer_self_in_static_references - reason: `Self` here is the concrete conforming type, not the protocol; `Other: Self` over-constrains Other == Self and does not compile (verified via swiftc).
     public func symmetricDifference<Other: Set.`Protocol` & Iterable & ~Copyable>(
         _ other: borrowing Other
     ) -> Self

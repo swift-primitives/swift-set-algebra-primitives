@@ -114,7 +114,7 @@ struct PowersetLatticeTests {
         let universe = fixture([1, 2, 3, 4])
         let lattice = universe.powerset()
         let a = fixture([1, 3])
-        let notA = universe.subtracting(a)              // U ∖ A = {2, 4}
+        let notA = universe.subtracting(a)  // U ∖ A = {2, 4}
         #expect(toArray(notA) == [2, 4])
         // a ∨ ¬a = ⊤ (universe);  a ∧ ¬a = ⊥ (∅) — set-algebra laws, order-insensitive.
         #expect(toArray(lattice.join(a, notA)).sorted() == toArray(universe).sorted())

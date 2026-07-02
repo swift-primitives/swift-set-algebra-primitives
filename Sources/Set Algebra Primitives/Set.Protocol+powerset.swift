@@ -9,10 +9,10 @@
 //
 // ===----------------------------------------------------------------------===//
 
-public import Set_Protocol_Primitives
-public import Builder_Primitives
 public import Algebra_Lattice_Primitives
+public import Builder_Primitives
 public import Iterable
+public import Set_Protocol_Primitives
 
 // MARK: - Powerset lattice grounding (∪ = join, ∩ = meet, ⊆ = order)
 //
@@ -34,8 +34,13 @@ public import Iterable
 // captures `Self` in its join/meet closures.
 
 extension Set.`Protocol`
-where Self: Buildable & Iterable & Copyable, Element: Copyable, Self.Failure == Never,
-      Self.Iterator.Element == Element, Self.Iterator.Failure == Never {
+where
+    Self: Buildable & Iterable & Copyable,
+    Element: Copyable,
+    Self.Failure == Never,
+    Self.Iterator.Element == Element,
+    Self.Iterator.Failure == Never
+{
 
     /// The **powerset lattice** with `self` as the universe (⊤): join = `union`
     /// (∪), meet = `intersection` (∩), bottom = ∅ (the empty set), top = `self`.

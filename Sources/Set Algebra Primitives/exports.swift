@@ -18,10 +18,10 @@
 // surface is self-contained — there is no bundled `Set.Buildable.Protocol`; the
 // buildable concern is builder-primitives × set-primitives, composed here.
 
-@_exported public import Set_Protocol_Primitives
-@_exported public import Builder_Primitives
-@_exported public import Iterable
 // The formal algebra grounding (model §4.2 / §9): the powerset lattice witness
 // (`someUniverse.powerset() -> Algebra.Lattice`) lives here, so re-export the
 // lattice structure it produces.
 @_exported public import Algebra_Lattice_Primitives
+@_exported public import Builder_Primitives
+@_exported public import Iterable
+@_exported public import Set_Protocol_Primitives

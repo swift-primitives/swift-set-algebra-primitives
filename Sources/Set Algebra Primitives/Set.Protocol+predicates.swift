@@ -9,8 +9,8 @@
 //
 // ===----------------------------------------------------------------------===//
 
-public import Set_Protocol_Primitives
 public import Iterable
+public import Set_Protocol_Primitives
 
 // MARK: - Relational Predicates (the algebra concern — composed `where Self: Iterable`)
 //
@@ -38,6 +38,7 @@ where Self: Iterable & ~Copyable, Self.Iterator.Element == Element, Self.Iterato
     /// - Returns: `true` if this set has no elements in common with `other`.
     /// - Complexity: O(min(n, m)) average, where n and m are the set sizes.
     @inlinable
+    // swiftlint:disable:next prefer_self_in_static_references - reason: `Self` here is the concrete conforming type, not the protocol; `Other: Self` over-constrains Other == Self and does not compile (verified via swiftc).
     public func isDisjoint<Other: Set.`Protocol` & Iterable & ~Copyable>(
         with other: borrowing Other
     ) -> Bool
@@ -61,6 +62,7 @@ where Self: Iterable & ~Copyable, Self.Iterator.Element == Element, Self.Iterato
     /// - Returns: `true` if every element of this set is in `other`.
     /// - Complexity: O(n) average, where n is the size of this set.
     @inlinable
+    // swiftlint:disable:next prefer_self_in_static_references - reason: `Self` here is the concrete conforming type, not the protocol; `Other: Self` over-constrains Other == Self and does not compile (verified via swiftc).
     public func isSubset<Other: Set.`Protocol` & Iterable & ~Copyable>(
         of other: borrowing Other
     ) -> Bool
@@ -78,6 +80,7 @@ where Self: Iterable & ~Copyable, Self.Iterator.Element == Element, Self.Iterato
     /// - Returns: `true` if every element of `other` is in this set.
     /// - Complexity: O(m) average, where m is the size of `other`.
     @inlinable
+    // swiftlint:disable:next prefer_self_in_static_references - reason: `Self` here is the concrete conforming type, not the protocol; `Other: Self` over-constrains Other == Self and does not compile (verified via swiftc).
     public func isSuperset<Other: Set.`Protocol` & Iterable & ~Copyable>(
         of other: borrowing Other
     ) -> Bool
@@ -99,6 +102,7 @@ where Self: Iterable & ~Copyable, Self.Iterator.Element == Element, Self.Iterato
     /// - Complexity: O(n) average, where n is the size of this set.
     ///   Short-circuits via count comparison when `count >= other.count`.
     @inlinable
+    // swiftlint:disable:next prefer_self_in_static_references - reason: `Self` here is the concrete conforming type, not the protocol; `Other: Self` over-constrains Other == Self and does not compile (verified via swiftc).
     public func isStrictSubset<Other: Set.`Protocol` & Iterable & ~Copyable>(
         of other: borrowing Other
     ) -> Bool
@@ -116,6 +120,7 @@ where Self: Iterable & ~Copyable, Self.Iterator.Element == Element, Self.Iterato
     /// - Complexity: O(m) average, where m is the size of `other`.
     ///   Short-circuits via count comparison when `count <= other.count`.
     @inlinable
+    // swiftlint:disable:next prefer_self_in_static_references - reason: `Self` here is the concrete conforming type, not the protocol; `Other: Self` over-constrains Other == Self and does not compile (verified via swiftc).
     public func isStrictSuperset<Other: Set.`Protocol` & Iterable & ~Copyable>(
         of other: borrowing Other
     ) -> Bool
@@ -132,6 +137,7 @@ where Self: Iterable & ~Copyable, Self.Iterator.Element == Element, Self.Iterato
     /// - Returns: `true` if both sets contain exactly the same elements.
     /// - Complexity: O(1) when counts differ; O(n) average otherwise.
     @inlinable
+    // swiftlint:disable:next prefer_self_in_static_references - reason: `Self` here is the concrete conforming type, not the protocol; `Other: Self` over-constrains Other == Self and does not compile (verified via swiftc).
     public func isEqual<Other: Set.`Protocol` & Iterable & ~Copyable>(
         to other: borrowing Other
     ) -> Bool
